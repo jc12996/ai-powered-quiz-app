@@ -97,7 +97,7 @@ class QuizController extends Controller
                 'correct_answer' => $question['correct_answer'],
                 'is_correct' => $isCorrect,
                 'options' => $question['options'],
-                'explanation' => $isCorrect ? null : $this->generateExplanation($question, $userAnswer)
+                'explanation' => $isCorrect ? null : $this->generateExplanation($question, $userAnswer, $quiz->topic)
             ];
         }
 
@@ -119,21 +119,33 @@ class QuizController extends Controller
     }
 
     /**
-     * Generate explanation for wrong answer using AI
+     * Generate explanation for wrong answer using AI with Wikipedia context
      */
-    private function generateExplanation($question, $userAnswer)
+    private function generateExplanation($question, $userAnswer, $quizTopic)
     {
         try {
+            // Use the enhanced explanation generation with Wikipedia context
+            $response = $this->openAIService->generateExplanationWithContext(
+                $question['question'],
+                $question['correct_answer'],
+                $userAnswer,
+                $question['options'],
+                $quizTopic
+            );
+            return $response;
+        } catch (\Exception $e) {
+            // Fallback to basic explanation if context retrieval fails
             $prompt = "Question: {$question['question']}\n";
             $prompt .= "Correct Answer: {$question['correct_answer']}\n";
             $prompt .= "User's Answer: {$userAnswer}\n";
             $prompt .= "Options: " . json_encode($question['options']) . "\n";
             $prompt .= "Please provide a brief explanation (1-2 sentences) of why the correct answer is right and why the user's answer is wrong. Be encouraging and educational.";
 
-            $response = $this->openAIService->generateExplanation($prompt);
-            return $response;
-        } catch (\Exception $e) {
-            return "The correct answer is {$question['correct_answer']}. Please review the question and try to understand why this answer is correct.";
+            try {
+                return $this->openAIService->generateExplanation($prompt);
+            } catch (\Exception $e2) {
+                return "The correct answer is {$question['correct_answer']}. Please review the question and try to understand why this answer is correct.";
+            }
         }
     }
 
