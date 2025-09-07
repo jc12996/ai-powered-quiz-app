@@ -1,6 +1,7 @@
 # AI-Powered Quiz Builder
 
-A full-stack web application that generates intelligent multiple-choice quizzes using AI. Built with Angular 19, Laravel, and MySQL, all containerized with Docker.
+A full-stack web application that generates intelligent multiple-choice quizzes using AI. Built with Angular 19, Laravel, and MySQL, all containerized with Docker. Written by John Christiansen, with the help of AI assitants (Cursor), Wikipedia, OpenAI API.
+9/7/2025
 
 ## Features
 
@@ -49,20 +50,40 @@ A full-stack web application that generates intelligent multiple-choice quizzes 
    cd quiz-app
    ```
 
-2. **Configure OpenAI API Key**
+2. **Configure Environment Variables**
 
    ```bash
-   # Edit backend/.env file
+   # Copy .env.example to .env if it doesn't exist
+   cd backend
+   cp .env.example .env
+
+   # Edit backend/.env file with localhost configuration
+   # Database configuration for localhost
+   DB_CONNECTION=mysql
+   DB_HOST=mysql
+   DB_PORT=3306
+   DB_DATABASE=quiz_app
+   DB_USERNAME=quiz_user
+   DB_PASSWORD=quiz_password
+
+   # OpenAI API Key (you'll need to add this)
    OPENAI_API_KEY=your_openai_api_key_here
    ```
 
-3. **Start all services**
+3. **Configure OpenAI API Key**
+
+   ```bash
+   # Edit backend/.env file and add your OpenAI API key
+   OPENAI_API_KEY=your_openai_api_key_here
+   ```
+
+4. **Start all services**
 
    ```bash
    make start
    ```
 
-4. **Access the application**
+5. **Access the application**
    - Frontend: http://localhost:3000
    - Backend API: http://localhost:8000
    - Database: localhost:3306
