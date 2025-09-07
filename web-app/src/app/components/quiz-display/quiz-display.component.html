@@ -1,0 +1,46 @@
+<div class="quiz-display" *ngIf="currentQuiz$ | async as quiz">
+  <h2>Quiz: {{ quiz.topic }}</h2>
+
+  <div class="quiz-questions">
+    <div
+      *ngFor="let question of quiz.questions; let i = index"
+      class="question-card"
+    >
+      <h3>Question {{ i + 1 }}</h3>
+      <p class="question-text">{{ question.question }}</p>
+
+      <div class="options">
+        <label
+          *ngFor="let option of ['A', 'B', 'C', 'D']"
+          class="option-label"
+          [class.selected]="userAnswers[i] === option"
+          [class.correct]="isSubmitted && option === question.correct_answer"
+          [class.incorrect]="
+            isSubmitted &&
+            userAnswers[i] === option &&
+            option !== question.correct_answer
+          "
+        >
+          <input
+            type="radio"
+            [name]="'question' + i"
+            [value]="option"
+            [checked]="userAnswers[i] === option"
+            (change)="selectAnswer(i, option)"
+            [disabled]="isSubmitted"
+          />
+          <span class="option-letter">{{ option }}.</span>
+          <span class="option-text">{{ getOptionText(question, option) }}</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="quiz-actions">
+    <button (click)="submitQuiz()" [disabled]="!canSubmit()" class="submit-btn">
+      Submit Quiz
+    </button>
+  </div>
+
+  <div *ngIf="loading$ | async" class="loading">Submitting quiz...</div>
+</div>

@@ -1,0 +1,33 @@
+<div class="quiz-generator">
+  <h2>Generate AI-Powered Quiz</h2>
+  <p>
+    Enter a topic and let AI generate a 5-question multiple choice quiz for you!
+  </p>
+
+  <div class="form-group">
+    <label for="topic">Topic:</label>
+    <input
+      type="text"
+      id="topic"
+      [(ngModel)]="topic"
+      placeholder="e.g., Photosynthesis, Neural Networks, Ancient Rome"
+      class="topic-input"
+    />
+  </div>
+
+  <button
+    (click)="generateQuiz()"
+    [disabled]="!topic.trim()"
+    class="generate-btn"
+  >
+    Generate Quiz
+  </button>
+
+  <div *ngIf="(quizState$ | async)?.loading" class="loading">
+    Generating quiz...
+  </div>
+
+  <div *ngIf="(quizState$ | async)?.error" class="error">
+    {{ (quizState$ | async)?.error }}
+  </div>
+</div>
