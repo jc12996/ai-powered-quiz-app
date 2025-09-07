@@ -37,9 +37,10 @@ A full-stack web application that generates intelligent multiple-choice quizzes 
 
 ### Prerequisites
 
-- Docker and Docker Compose
-- Make
-- OpenAI API key
+- **Docker Desktop** - For containerization and running all services
+  - [Download Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- **OpenAI API Key with credits added** - Required for AI quiz generation and explanations
+  - [Generate OpenAI API Key](https://platform.openai.com/api-keys)
 
 ### Setup
 
