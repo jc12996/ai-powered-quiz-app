@@ -7,10 +7,12 @@ A full-stack web application that generates intelligent multiple-choice quizzes 
 
 - 🤖 **AI-Powered Quiz Generation**: Uses OpenAI API to generate 5-question multiple-choice quizzes on any topic
 - 🎯 **Interactive Quiz Interface**: Clean, modern UI for taking quizzes with real-time feedback
-- 📊 **Results & Scoring**: Detailed results with percentage scores and performance feedback
+- 📊 **Results & Scoring**: Detailed results with percentage scores, performance feedback, and explanations for incorrect answers
+- 🕵️ **Wikipedia-Powered RAG**: Uses Retrieval-Augmented Generation (RAG) to search Wikipedia for quiz content and explanations, with a smooth fallback if Wikipedia is unavailable
+- 🗂️ **Quiz History**: View your past submitted quizzes and results at any time
 - 🏗️ **Modern Architecture**: Angular 19 with NgRx state management, Laravel API, MySQL database
 - 🐳 **Dockerized**: All services containerized for easy deployment and development
-- 📱 **Responsive Design**: Works seamlessly on desktop and mobile devices
+- 📱 **Responsive Design**: Works on desktop and mobile devices
 
 ## Tech Stack
 
