@@ -2,12 +2,15 @@
   <header class="app-header">
     <h1>AI-Powered Quiz Builder</h1>
     <p>Generate and take intelligent quizzes on any topic</p>
+    <nav class="app-nav">
+      <a routerLink="/home" routerLinkActive="active" class="nav-link">Home</a>
+      <a routerLink="/history" routerLinkActive="active" class="nav-link"
+        >Quiz History</a
+      >
+    </nav>
   </header>
 
   <main class="app-main">
-    <app-quiz-generator></app-quiz-generator>
-    <app-quiz-selector></app-quiz-selector>
-    <app-quiz-display></app-quiz-display>
-    <app-quiz-results></app-quiz-results>
+    <router-outlet></router-outlet>
   </main>
 </div>

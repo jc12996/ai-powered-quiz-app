@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import {
   selectQuizResults,
   selectCurrentQuiz,
 } from '../../store/quiz.selectors';
-import { clearQuiz } from '../../store/quiz.actions';
+import { clearAllState } from '../../store/quiz.actions';
 import { Quiz, QuizResult } from '../../models/quiz.model';
 import { QuizReviewComponent } from '../quiz-review/quiz-review.component';
 
@@ -21,7 +22,7 @@ export class QuizResultsComponent implements OnInit {
   quizResults$: Observable<QuizResult[]>;
   latestResult: QuizResult | null = null;
 
-  constructor(private store: Store) {
+  constructor(private store: Store, private router: Router) {
     this.currentQuiz$ = this.store.select(selectCurrentQuiz);
     this.quizResults$ = this.store.select(selectQuizResults);
   }
@@ -30,12 +31,17 @@ export class QuizResultsComponent implements OnInit {
     this.quizResults$.subscribe((results) => {
       if (results.length > 0) {
         this.latestResult = results[results.length - 1];
+      } else {
+        // Reset when results are cleared
+        this.latestResult = null;
       }
     });
   }
 
   generateNewQuiz() {
-    this.store.dispatch(clearQuiz());
+    // Clear all state and navigate to home page
+    this.store.dispatch(clearAllState());
+    this.router.navigate(['/home']);
   }
 
   getScoreColor(percentage: number): string {

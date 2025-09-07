@@ -1,0 +1,11 @@
+.home-content {
+  /* Add spacing between components for better scrolling visibility */
+}
+
+.home-content > * {
+  margin-bottom: 3rem;
+}
+
+.home-content > *:last-child {
+  margin-bottom: 0;
+}

@@ -1,21 +1,32 @@
 <div class="quiz-selector">
-  <h3>Review Previous Quizzes</h3>
-  <div class="selector-container">
-    <select
-      (change)="onQuizSelect($event)"
-      [disabled]="loading$ | async"
-      class="quiz-dropdown"
-    >
-      <option value="">Select a quiz to review...</option>
-      <option
-        *ngFor="let quiz of availableQuizzes$ | async"
-        [value]="quiz.id"
-        [selected]="selectedQuizId === quiz.id"
-      >
-        {{ quiz.topic }} - {{ formatDate(quiz.created_at) }}
-      </option>
-    </select>
+  <button 
+    (click)="toggleHistory()" 
+    class="toggle-history-btn"
+    [class.active]="showHistory"
+  >
+    <span class="toggle-icon">{{ showHistory ? '▼' : '▶' }}</span>
+    {{ showHistory ? 'Hide' : 'Show' }} Quiz History
+  </button>
 
-    <div class="loading" *ngIf="loading$ | async">Loading quizzes...</div>
+  <div class="history-section" *ngIf="showHistory">
+    <h3>Review Previous Quizzes</h3>
+    <div class="selector-container">
+      <select
+        (change)="onQuizSelect($event)"
+        [disabled]="loading$ | async"
+        class="quiz-dropdown"
+      >
+        <option value="">Select a quiz to review...</option>
+        <option
+          *ngFor="let quiz of availableQuizzes$ | async"
+          [value]="quiz.id"
+          [selected]="selectedQuizId === quiz.id"
+        >
+          {{ quiz.topic }} - {{ formatDate(quiz.created_at) }}
+        </option>
+      </select>
+
+      <div class="loading" *ngIf="loading$ | async">Loading quizzes...</div>
+    </div>
   </div>
 </div>

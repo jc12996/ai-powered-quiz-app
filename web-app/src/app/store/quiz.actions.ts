@@ -48,6 +48,8 @@ export const submitQuizFailure = createAction(
 
 export const clearQuiz = createAction('[Quiz] Clear Quiz');
 
+export const clearAllState = createAction('[Quiz] Clear All State');
+
 export const clearError = createAction('[Quiz] Clear Error');
 
 export const loadAvailableQuizzes = createAction(

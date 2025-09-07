@@ -1,17 +1,9 @@
 import { Component } from '@angular/core';
-import { QuizGeneratorComponent } from './components/quiz-generator/quiz-generator.component';
-import { QuizSelectorComponent } from './components/quiz-selector/quiz-selector.component';
-import { QuizDisplayComponent } from './components/quiz-display/quiz-display.component';
-import { QuizResultsComponent } from './components/quiz-results/quiz-results.component';
+import { RouterModule, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [
-    QuizGeneratorComponent,
-    QuizSelectorComponent,
-    QuizDisplayComponent,
-    QuizResultsComponent,
-  ],
+  imports: [RouterModule, RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })

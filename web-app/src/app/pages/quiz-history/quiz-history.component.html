@@ -1,0 +1,37 @@
+<div class="quiz-history-page">
+  <div class="page-header">
+    <h1>Quiz History</h1>
+    <p>Review and retake your previous quizzes</p>
+    <a routerLink="/" class="back-btn">← Back to Quiz Builder</a>
+  </div>
+
+  <div class="history-content">
+    <div class="quiz-selector">
+      <h2>Select a Quiz to Review</h2>
+      <div class="selector-container">
+        <select
+          (change)="onQuizSelect($event)"
+          [disabled]="loading$ | async"
+          class="quiz-dropdown"
+        >
+          <option value="">Choose a quiz to review...</option>
+          <option
+            *ngFor="let quiz of availableQuizzes$ | async"
+            [value]="quiz.id"
+            [selected]="selectedQuizId === quiz.id"
+          >
+            {{ quiz.topic }} - {{ formatDate(quiz.created_at) }}
+          </option>
+        </select>
+
+        <div class="loading" *ngIf="loading$ | async">Loading quizzes...</div>
+      </div>
+    </div>
+
+    <!-- Quiz Display and Results will be shown here when a quiz is selected -->
+    <div class="selected-quiz-content">
+      <app-quiz-display></app-quiz-display>
+      <app-quiz-results></app-quiz-results>
+    </div>
+  </div>
+</div>

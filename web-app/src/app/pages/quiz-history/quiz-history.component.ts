@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import {
@@ -8,18 +9,24 @@ import {
 } from '../../store/quiz.selectors';
 import { loadAvailableQuizzes, loadQuiz } from '../../store/quiz.actions';
 import { Quiz } from '../../models/quiz.model';
+import { QuizDisplayComponent } from '../../components/quiz-display/quiz-display.component';
+import { QuizResultsComponent } from '../../components/quiz-results/quiz-results.component';
 
 @Component({
-  selector: 'app-quiz-selector',
-  imports: [CommonModule],
-  templateUrl: './quiz-selector.component.html',
-  styleUrl: './quiz-selector.component.css',
+  selector: 'app-quiz-history',
+  imports: [
+    CommonModule,
+    RouterModule,
+    QuizDisplayComponent,
+    QuizResultsComponent,
+  ],
+  templateUrl: './quiz-history.component.html',
+  styleUrl: './quiz-history.component.css',
 })
-export class QuizSelectorComponent implements OnInit {
+export class QuizHistoryComponent implements OnInit {
   availableQuizzes$: Observable<Quiz[]>;
   loading$: Observable<boolean>;
   selectedQuizId: number | null = null;
-  showHistory = false;
 
   constructor(private store: Store) {
     this.availableQuizzes$ = this.store.select(selectAvailableQuizzes);
@@ -27,7 +34,7 @@ export class QuizSelectorComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Don't automatically load quizzes - only load when user toggles history
+    this.store.dispatch(loadAvailableQuizzes());
   }
 
   onQuizSelect(event: Event) {
@@ -48,13 +55,5 @@ export class QuizSelectorComponent implements OnInit {
       hour: '2-digit',
       minute: '2-digit',
     });
-  }
-
-  toggleHistory() {
-    this.showHistory = !this.showHistory;
-    if (this.showHistory) {
-      // Load quizzes when showing history
-      this.store.dispatch(loadAvailableQuizzes());
-    }
   }
 }

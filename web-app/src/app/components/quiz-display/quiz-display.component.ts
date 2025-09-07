@@ -32,6 +32,10 @@ export class QuizDisplayComponent implements OnInit {
       if (quiz) {
         this.userAnswers = new Array(quiz.questions.length).fill('');
         this.isSubmitted = false;
+      } else {
+        // Reset state when quiz is cleared
+        this.userAnswers = [];
+        this.isSubmitted = false;
       }
     });
   }

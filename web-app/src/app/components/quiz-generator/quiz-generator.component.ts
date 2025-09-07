@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngrx/store';
@@ -13,12 +13,22 @@ import { QuizState } from '../../models/quiz.model';
   templateUrl: './quiz-generator.component.html',
   styleUrl: './quiz-generator.component.css',
 })
-export class QuizGeneratorComponent {
+export class QuizGeneratorComponent implements OnInit {
   topic = '';
   quizState$: Observable<QuizState>;
 
   constructor(private store: Store) {
     this.quizState$ = this.store.select(selectQuizState);
+  }
+
+  ngOnInit() {
+    // Listen for state changes to clear the topic input when state is cleared
+    this.quizState$.subscribe((state) => {
+      // If currentQuiz is null and we're not loading, clear the topic input
+      if (!state.currentQuiz && !state.loading) {
+        this.topic = '';
+      }
+    });
   }
 
   generateQuiz() {

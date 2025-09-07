@@ -75,6 +75,10 @@ export const quizReducer = createReducer(
     currentQuiz: null,
   })),
 
+  on(QuizActions.clearAllState, () => ({
+    ...initialState,
+  })),
+
   on(QuizActions.clearError, (state) => ({
     ...state,
     error: null,
