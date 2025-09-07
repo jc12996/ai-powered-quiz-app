@@ -100,11 +100,24 @@ setup-backend:
 			sed -i '' 's/# DB_DATABASE=laravel/DB_DATABASE=quiz_app/' backend/.env; \
 			sed -i '' 's/# DB_USERNAME=root/DB_USERNAME=quiz_user/' backend/.env; \
 			sed -i '' 's/# DB_PASSWORD=/DB_PASSWORD=quiz_password/' backend/.env; \
-			echo "Generating application key..."; \
+			echo ""; \
+			echo "==============================================="; \
+			echo "OpenAI API Key is REQUIRED for AI Generated Quiz to work"; \
+			echo "==============================================="; \
+			echo "Please enter your OpenAI API key:"; \
+			read -r openai_key; \
+			if [ -n "$$openai_key" ]; then \
+				echo "Adding OpenAI API key to .env file..."; \
+				sed -i '' '/OPENAI_API_KEY=/d' backend/.env; \
+				echo "OPENAI_API_KEY=$$openai_key" >> backend/.env; \
+			else \
+				echo "Warning: No OpenAI API key provided. You can add it later to backend/.env file:"; \
+				echo "OPENAI_API_KEY=your_openai_api_key_here"; \
+			fi; \
+			echo ""; \
+			echo "Generating Laravel application key..."; \
 			cd backend && php artisan key:generate; \
 			echo ".env file created successfully!"; \
-			echo "Please add your OpenAI API key to backend/.env file:"; \
-			echo "OPENAI_API_KEY=your_openai_api_key_here"; \
 		else \
 			echo "Error: .env file is required. Please copy .env.example to .env and configure it."; \
 			exit 1; \
@@ -114,6 +127,23 @@ setup-backend:
 		if ! grep -q "APP_KEY=base64:" backend/.env; then \
 			echo "Generating application key..."; \
 			cd backend && php artisan key:generate; \
+		fi; \
+		echo "Checking if OpenAI API key is set..."; \
+		if ! grep -q "OPENAI_API_KEY=" backend/.env || grep -q "OPENAI_API_KEY=your_openai_api_key_here" backend/.env; then \
+			echo ""; \
+			echo "==============================================="; \
+			echo "OpenAI API Key is REQUIRED for AI Generated Quiz to work"; \
+			echo "==============================================="; \
+			echo "Please enter your OpenAI API key:"; \
+			read -r openai_key; \
+			if [ -n "$$openai_key" ]; then \
+				echo "Adding OpenAI API key to .env file..."; \
+				sed -i '' '/OPENAI_API_KEY=/d' backend/.env; \
+				echo "OPENAI_API_KEY=$$openai_key" >> backend/.env; \
+			else \
+				echo "Warning: No OpenAI API key provided. You can add it later to backend/.env file:"; \
+				echo "OPENAI_API_KEY=your_openai_api_key_here"; \
+			fi; \
 		fi; \
 	fi
 
