@@ -29,9 +29,103 @@
     </div>
 
     <!-- Quiz Display and Results will be shown here when a quiz is selected -->
-    <div class="selected-quiz-content">
-      <app-quiz-display></app-quiz-display>
-      <app-quiz-results></app-quiz-results>
+    <div class="selected-quiz-content" *ngIf="selectedQuizId">
+      <div class="view-toggle">
+        <button
+          (click)="toggleView()"
+          class="toggle-btn"
+          [class.active]="!showResults"
+        >
+          Retake Quiz
+        </button>
+        <button
+          (click)="toggleView()"
+          class="toggle-btn"
+          [class.active]="showResults"
+        >
+          View Previous Results
+        </button>
+      </div>
+
+      <div *ngIf="!showResults">
+        <app-quiz-display></app-quiz-display>
+        <app-quiz-results></app-quiz-results>
+      </div>
+
+      <div *ngIf="showResults" class="previous-results">
+        <h2>Previous Quiz Results</h2>
+        <div *ngIf="(quizResults$ | async)?.length === 0" class="no-results">
+          <p>No previous results found for this quiz.</p>
+        </div>
+        <div *ngFor="let result of quizResults$ | async" class="result-item">
+          <div class="result-header">
+            <h3>Attempt {{ (quizResults$ | async)?.indexOf(result)! + 1 }}</h3>
+            <div class="result-score">
+              <span class="score"
+                >{{ result.score }}/{{ result.total_questions }}</span
+              >
+              <span class="percentage">{{ result.percentage }}%</span>
+            </div>
+            <div class="result-date">
+              {{ formatDate(result.created_at) }}
+            </div>
+          </div>
+
+          <div class="questions-review" *ngIf="result.question_results">
+            <div
+              *ngFor="
+                let questionResult of result.question_results;
+                let i = index
+              "
+              class="question-item"
+            >
+              <div class="question-header">
+                <h4>Question {{ i + 1 }}</h4>
+                <div
+                  class="question-status"
+                  [class.correct]="questionResult.is_correct"
+                  [class.incorrect]="!questionResult.is_correct"
+                >
+                  {{ questionResult.is_correct ? "✓ Correct" : "✗ Incorrect" }}
+                </div>
+              </div>
+
+              <p class="question-text">{{ questionResult.question }}</p>
+
+              <div class="options-review">
+                <div
+                  class="option"
+                  *ngFor="let option of ['A', 'B', 'C', 'D']"
+                  [class]="getOptionClass(questionResult, option)"
+                >
+                  <span class="option-label">{{ option }}.</span>
+                  <span class="option-text">{{
+                    getOptionText(questionResult, option)
+                  }}</span>
+                  <span
+                    class="option-indicator"
+                    *ngIf="option === questionResult.correct_answer"
+                    >✓</span
+                  >
+                  <span
+                    class="option-indicator incorrect"
+                    *ngIf="
+                      option === questionResult.user_answer &&
+                      !questionResult.is_correct
+                    "
+                    >✗</span
+                  >
+                </div>
+              </div>
+
+              <div class="explanation" *ngIf="questionResult.explanation">
+                <h5>Explanation:</h5>
+                <p>{{ questionResult.explanation }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

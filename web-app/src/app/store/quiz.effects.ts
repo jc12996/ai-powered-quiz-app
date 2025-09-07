@@ -88,4 +88,18 @@ export class QuizEffects {
       )
     )
   );
+
+  loadQuizResults$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(QuizActions.loadQuizResults),
+      switchMap(({ quizId }) =>
+        this.quizService.getQuizResults(quizId).pipe(
+          map((results) => QuizActions.loadQuizResultsSuccess({ results })),
+          catchError((error) =>
+            of(QuizActions.loadQuizResultsFailure({ error: error.message }))
+          )
+        )
+      )
+    )
+  );
 }

@@ -150,6 +150,52 @@ class QuizController extends Controller
     }
 
     /**
+     * Get quiz results for a specific quiz
+     */
+    public function getResults(string $id): JsonResponse
+    {
+        $quiz = Quiz::findOrFail($id);
+        $results = QuizResult::where('quiz_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // For each result, we need to reconstruct the question_results with explanations
+        $resultsWithDetails = $results->map(function ($result) use ($quiz) {
+            $questions = $quiz->questions;
+            $userAnswers = $result->user_answers;
+            $questionResults = [];
+
+            foreach ($questions as $index => $question) {
+                $userAnswer = $userAnswers[$index] ?? null;
+                $isCorrect = $userAnswer === $question['correct_answer'];
+                
+                $questionResults[] = [
+                    'question' => $question['question'],
+                    'user_answer' => $userAnswer,
+                    'correct_answer' => $question['correct_answer'],
+                    'is_correct' => $isCorrect,
+                    'options' => $question['options'],
+                    'explanation' => $isCorrect ? null : $this->generateExplanation($question, $userAnswer, $quiz->topic)
+                ];
+            }
+
+            return [
+                'id' => $result->id,
+                'quiz_id' => $result->quiz_id,
+                'user_answers' => $result->user_answers,
+                'score' => $result->score,
+                'total_questions' => $result->total_questions,
+                'percentage' => round(($result->score / $result->total_questions) * 100, 2),
+                'question_results' => $questionResults,
+                'created_at' => $result->created_at,
+                'updated_at' => $result->updated_at
+            ];
+        });
+
+        return response()->json(['results' => $resultsWithDetails]);
+    }
+
+    /**
      * Get all quizzes
      */
     public function index(): JsonResponse

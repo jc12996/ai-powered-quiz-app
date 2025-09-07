@@ -101,5 +101,24 @@ export const quizReducer = createReducer(
     ...state,
     loading: false,
     error,
+  })),
+
+  on(QuizActions.loadQuizResults, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+
+  on(QuizActions.loadQuizResultsSuccess, (state, { results }) => ({
+    ...state,
+    quizResults: results,
+    loading: false,
+    error: null,
+  })),
+
+  on(QuizActions.loadQuizResultsFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
   }))
 );

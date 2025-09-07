@@ -65,3 +65,18 @@ export const loadAvailableQuizzesFailure = createAction(
   '[Quiz] Load Available Quizzes Failure',
   props<{ error: string }>()
 );
+
+export const loadQuizResults = createAction(
+  '[Quiz] Load Quiz Results',
+  props<{ quizId: number }>()
+);
+
+export const loadQuizResultsSuccess = createAction(
+  '[Quiz] Load Quiz Results Success',
+  props<{ results: QuizResult[] }>()
+);
+
+export const loadQuizResultsFailure = createAction(
+  '[Quiz] Load Quiz Results Failure',
+  props<{ error: string }>()
+);

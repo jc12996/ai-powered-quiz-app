@@ -74,4 +74,12 @@ export class QuizService {
       .get<{ quizzes: Quiz[] }>(`${this.apiUrl}/quizzes`)
       .pipe(map((response) => response.quizzes));
   }
+
+  getQuizResults(quizId: number): Observable<QuizResult[]> {
+    return this.http
+      .get<{ results: QuizResult[] }>(
+        `${this.apiUrl}/quizzes/${quizId}/results`
+      )
+      .pipe(map((response) => response.results));
+  }
 }

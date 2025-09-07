@@ -13,5 +13,6 @@ Route::prefix('quizzes')->group(function () {
     Route::post('/generate', [QuizController::class, 'generate']);
     Route::get('/', [QuizController::class, 'index']);
     Route::get('/{id}', [QuizController::class, 'show']);
+    Route::get('/{id}/results', [QuizController::class, 'getResults']);
     Route::post('/{id}/submit', [QuizController::class, 'submit']);
 });
