@@ -10,6 +10,11 @@
   margin-bottom: 1rem;
 }
 
+.quiz-generator .description {
+  color: white;
+  margin-bottom: 2rem;
+}
+
 .quiz-generator p {
   color: #666;
   margin-bottom: 2rem;

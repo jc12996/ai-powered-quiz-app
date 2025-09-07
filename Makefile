@@ -1,4 +1,4 @@
-.PHONY: start stop clean build-frontend build-backend setup-backend migrate
+.PHONY: start start-dev start-prod stop clean build-frontend build-backend setup-backend migrate
 
 # Start all services
 start:
@@ -13,6 +13,39 @@ start:
 	cd backend && docker compose up -d
 	@echo "Waiting for database to be ready..."
 	@sleep 15
+	@echo "Running database migrations and seeding..."
+	@$(MAKE) migrate
+	@echo "Detecting environment..."
+	@if [ -n "$$DEVELOPMENT_MODE" ] && [ "$$DEVELOPMENT_MODE" = "true" ]; then \
+		echo "Development mode explicitly enabled - starting with hot reloading..."; \
+		$(MAKE) start-dev; \
+	elif [ -n "$$PRODUCTION_MODE" ] && [ "$$PRODUCTION_MODE" = "true" ]; then \
+		echo "Production mode explicitly enabled - building static frontend..."; \
+		$(MAKE) start-prod; \
+	elif [ "$$(hostname)" = "localhost" ] || [ "$$(hostname)" = "$$(hostname -s)" ] || [ -z "$$HOSTNAME" ] || [ "$$HOSTNAME" = "localhost" ] || [ "$$(uname -s)" = "Darwin" ] || [ "$$(uname -s)" = "Linux" ]; then \
+		echo "Localhost/development environment detected - starting with hot reloading..."; \
+		$(MAKE) start-dev; \
+	else \
+		echo "Production environment detected - building static frontend..."; \
+		$(MAKE) start-prod; \
+	fi
+
+# Start with hot reloading (development mode)
+start-dev:
+	@echo "Starting Angular development server with hot reloading..."
+	@echo "Installing Angular dependencies..."
+	cd web-app && npm install
+	@echo "Frontend will be available at: http://localhost:4200"
+	@echo "Backend API: http://localhost:8000"
+	@echo "Database: localhost:3306"
+	@echo ""
+	@echo "Starting Angular dev server in background..."
+	cd web-app && npm start &
+	@echo "Development environment started with hot reloading!"
+	@echo "Press Ctrl+C to stop all services"
+
+# Start with static build (production mode)
+start-prod:
 	@echo "Building and starting Angular frontend..."
 	@echo "Removing any existing frontend image to ensure fresh build..."
 	docker rmi quiz-frontend || true
@@ -28,6 +61,9 @@ stop:
 	cd backend && docker compose down
 	docker stop quiz-frontend || true
 	docker rm quiz-frontend || true
+	@echo "Stopping Angular dev server..."
+	pkill -f "ng serve" || true
+	pkill -f "npm start" || true
 	@echo "All services stopped!"
 
 # Clean up everything
@@ -84,7 +120,17 @@ setup-backend:
 # Run database migrations
 migrate:
 	@echo "Running database migrations..."
-	cd backend && docker compose exec app php artisan migrate:fresh --seed
+	@echo "Waiting for database connection..."
+	@for i in $$(seq 1 30); do \
+		if docker compose -f backend/docker-compose.yml exec -T app php artisan migrate:status >/dev/null 2>&1; then \
+			echo "Database connection established!"; \
+			break; \
+		fi; \
+		echo "Waiting for database... ($$i/30)"; \
+		sleep 2; \
+	done
+	@echo "Running migrations and seeding..."
+	cd backend && docker compose exec -T app php artisan migrate:fresh --seed
 
 # Development mode (with live reload)
 dev:
@@ -102,13 +148,19 @@ logs:
 # Help
 help:
 	@echo "Available commands:"
-	@echo "  start        - Start all services"
+	@echo "  start        - Start all services (auto-detects environment)"
+	@echo "  start-dev    - Start with hot reloading (development mode)"
+	@echo "  start-prod   - Start with static build (production mode)"
 	@echo "  stop         - Stop all services"
 	@echo "  clean        - Stop and clean up everything"
 	@echo "  build-frontend - Build Angular frontend only"
 	@echo "  build-backend  - Build Laravel backend only"
 	@echo "  setup-backend - Setup Laravel backend (.env, key generation)"
 	@echo "  migrate      - Run database migrations"
-	@echo "  dev          - Start development environment"
+	@echo "  dev          - Start development environment (legacy)"
 	@echo "  logs         - Show all service logs"
 	@echo "  help         - Show this help message"
+	@echo ""
+	@echo "Environment Detection:"
+	@echo "  - localhost: Uses hot reloading (port 4200)"
+	@echo "  - production: Uses static build (port 3000)"
