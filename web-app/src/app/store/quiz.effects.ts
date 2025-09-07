@@ -18,6 +18,15 @@ export class QuizEffects {
           'QuizEffects: generateQuiz effect triggered for topic:',
           topic
         );
+        console.log('QuizEffects: Topic type:', typeof topic);
+        console.log(
+          'QuizEffects: Topic length:',
+          topic ? topic.length : 'null/undefined'
+        );
+        console.log(
+          'QuizEffects: Topic trimmed:',
+          topic ? topic.trim() : 'null/undefined'
+        );
         return this.quizService.generateQuiz(topic).pipe(
           map((quiz) => {
             console.log('QuizEffects: Quiz generation successful:', quiz);

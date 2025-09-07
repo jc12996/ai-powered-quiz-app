@@ -29,6 +29,10 @@ start:
 		echo "Production environment detected - building static frontend..."; \
 		$(MAKE) start-prod; \
 	fi
+	@echo "Finalizing Laravel setup..."
+	@echo "Generating application key to ensure encryption is properly configured..."
+	cd backend && docker compose exec -T app php artisan key:generate
+	@echo "All processes completed successfully!"
 
 # Start with hot reloading (development mode)
 start-dev:
@@ -127,23 +131,6 @@ setup-backend:
 		if ! grep -q "APP_KEY=base64:" backend/.env; then \
 			echo "Generating application key..."; \
 			cd backend && php artisan key:generate; \
-		fi; \
-		echo "Checking if OpenAI API key is set..."; \
-		if ! grep -q "OPENAI_API_KEY=" backend/.env || grep -q "OPENAI_API_KEY=your_openai_api_key_here" backend/.env; then \
-			echo ""; \
-			echo "==============================================="; \
-			echo "OpenAI API Key is REQUIRED for AI Generated Quiz to work"; \
-			echo "==============================================="; \
-			echo "Please enter your OpenAI API key:"; \
-			read -r openai_key; \
-			if [ -n "$$openai_key" ]; then \
-				echo "Adding OpenAI API key to .env file..."; \
-				sed -i '' '/OPENAI_API_KEY=/d' backend/.env; \
-				echo "OPENAI_API_KEY=$$openai_key" >> backend/.env; \
-			else \
-				echo "Warning: No OpenAI API key provided. You can add it later to backend/.env file:"; \
-				echo "OPENAI_API_KEY=your_openai_api_key_here"; \
-			fi; \
 		fi; \
 	fi
 

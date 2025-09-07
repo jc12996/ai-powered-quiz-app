@@ -17,11 +17,24 @@ export class QuizService {
       'QuizService: Making HTTP request to generate quiz for topic:',
       topic
     );
+    console.log('QuizService: Topic type:', typeof topic);
+    console.log(
+      'QuizService: Topic length:',
+      topic ? topic.length : 'null/undefined'
+    );
+    console.log(
+      'QuizService: Topic trimmed:',
+      topic ? topic.trim() : 'null/undefined'
+    );
     console.log('QuizService: API URL:', `${this.apiUrl}/quizzes/generate`);
+
+    const requestBody = { topic };
+    console.log('QuizService: Request body:', requestBody);
+
     return this.http
       .post<{ success: boolean; quiz: Quiz }>(
         `${this.apiUrl}/quizzes/generate`,
-        { topic }
+        requestBody
       )
       .pipe(
         map((response) => {

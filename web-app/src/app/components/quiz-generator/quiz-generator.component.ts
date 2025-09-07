@@ -24,8 +24,14 @@ export class QuizGeneratorComponent implements OnInit {
   ngOnInit() {
     // Listen for state changes to clear the topic input when state is cleared
     this.quizState$.subscribe((state) => {
-      // If currentQuiz is null and we're not loading, clear the topic input
-      if (!state.currentQuiz && !state.loading) {
+      // Only clear the topic input when the state is completely reset (no quiz, no loading, no error)
+      // This happens when "Generate New Quiz" is clicked from the results page
+      if (
+        !state.currentQuiz &&
+        !state.loading &&
+        !state.error &&
+        state.quizResults.length === 0
+      ) {
         this.topic = '';
       }
     });
@@ -33,13 +39,15 @@ export class QuizGeneratorComponent implements OnInit {
 
   generateQuiz() {
     console.log('Generate quiz button clicked!', this.topic);
+    console.log('Topic length:', this.topic.length);
+    console.log('Topic trimmed:', this.topic.trim());
+    console.log('Topic trimmed length:', this.topic.trim().length);
+
     if (this.topic.trim()) {
-      console.log(
-        'Dispatching generateQuiz action with topic:',
-        this.topic.trim()
-      );
+      const topicToSend = this.topic.trim();
+      console.log('Dispatching generateQuiz action with topic:', topicToSend);
       this.store.dispatch(clearError());
-      this.store.dispatch(generateQuiz({ topic: this.topic.trim() }));
+      this.store.dispatch(generateQuiz({ topic: topicToSend }));
     } else {
       console.log('Topic is empty, not dispatching action');
     }
