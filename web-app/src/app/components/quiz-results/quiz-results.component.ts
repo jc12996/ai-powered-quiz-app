@@ -29,8 +29,21 @@ export class QuizResultsComponent implements OnInit {
 
   ngOnInit() {
     this.quizResults$.subscribe((results) => {
+      console.log('QuizResultsComponent: Results changed:', results);
       if (results.length > 0) {
         this.latestResult = results[results.length - 1];
+        console.log('QuizResultsComponent: Latest result:', this.latestResult);
+        // Trigger scroll to results when they are first loaded
+        setTimeout(() => {
+          if ((window as any).scrollToQuizResults) {
+            console.log('QuizResultsComponent: Calling scrollToQuizResults');
+            (window as any).scrollToQuizResults();
+          } else {
+            console.log(
+              'QuizResultsComponent: scrollToQuizResults not available on window'
+            );
+          }
+        }, 1000);
       } else {
         // Reset when results are cleared
         this.latestResult = null;

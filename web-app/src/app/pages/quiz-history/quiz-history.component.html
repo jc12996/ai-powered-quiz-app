@@ -48,11 +48,11 @@
       </div>
 
       <div *ngIf="!showResults">
-        <app-quiz-display></app-quiz-display>
-        <app-quiz-results></app-quiz-results>
+        <app-quiz-display #quizDisplay></app-quiz-display>
+        <app-quiz-results #quizResults></app-quiz-results>
       </div>
 
-      <div *ngIf="showResults" class="previous-results">
+      <div *ngIf="showResults" class="previous-results" #previousResults>
         <h2>Previous Quiz Results</h2>
         <div *ngIf="(quizResults$ | async)?.length === 0" class="no-results">
           <p>No previous results found for this quiz.</p>
