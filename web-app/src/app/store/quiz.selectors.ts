@@ -22,3 +22,8 @@ export const selectQuizResults = createSelector(
   selectQuizState,
   (state) => state.quizResults
 );
+
+export const selectAvailableQuizzes = createSelector(
+  selectQuizState,
+  (state) => state.availableQuizzes
+);

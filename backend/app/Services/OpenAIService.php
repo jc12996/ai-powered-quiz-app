@@ -90,4 +90,43 @@ class OpenAIService
 
 Make sure the questions are educational, clear, and appropriate for the topic. The correct answers should be factual and well-reasoned.";
     }
+
+    public function generateExplanation(string $prompt): string
+    {
+        if (!$this->apiKey) {
+            throw new \Exception('OpenAI API key not configured');
+        }
+
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Content-Type' => 'application/json',
+            ])->post($this->baseUrl . '/chat/completions', [
+                'model' => 'gpt-3.5-turbo',
+                'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => 'You are a helpful tutor. Provide clear, encouraging explanations for quiz answers. Be educational and supportive.'
+                    ],
+                    [
+                        'role' => 'user',
+                        'content' => $prompt
+                    ]
+                ],
+                'max_tokens' => 200,
+                'temperature' => 0.5
+            ]);
+
+            if ($response->failed()) {
+                throw new \Exception('OpenAI API request failed: ' . $response->body());
+            }
+
+            $data = $response->json();
+            return trim($data['choices'][0]['message']['content']);
+
+        } catch (\Exception $e) {
+            Log::error('OpenAI Explanation Error: ' . $e->getMessage());
+            throw $e;
+        }
+    }
 }

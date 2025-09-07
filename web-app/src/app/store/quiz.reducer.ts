@@ -5,6 +5,7 @@ import * as QuizActions from './quiz.actions';
 export const initialState: QuizState = {
   currentQuiz: null,
   quizResults: [],
+  availableQuizzes: [],
   loading: false,
   error: null,
 };
@@ -77,5 +78,24 @@ export const quizReducer = createReducer(
   on(QuizActions.clearError, (state) => ({
     ...state,
     error: null,
+  })),
+
+  on(QuizActions.loadAvailableQuizzes, (state) => ({
+    ...state,
+    loading: true,
+    error: null,
+  })),
+
+  on(QuizActions.loadAvailableQuizzesSuccess, (state, { quizzes }) => ({
+    ...state,
+    availableQuizzes: quizzes,
+    loading: false,
+    error: null,
+  })),
+
+  on(QuizActions.loadAvailableQuizzesFailure, (state, { error }) => ({
+    ...state,
+    loading: false,
+    error,
   }))
 );

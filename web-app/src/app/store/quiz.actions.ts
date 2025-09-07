@@ -49,3 +49,17 @@ export const submitQuizFailure = createAction(
 export const clearQuiz = createAction('[Quiz] Clear Quiz');
 
 export const clearError = createAction('[Quiz] Clear Error');
+
+export const loadAvailableQuizzes = createAction(
+  '[Quiz] Load Available Quizzes'
+);
+
+export const loadAvailableQuizzesSuccess = createAction(
+  '[Quiz] Load Available Quizzes Success',
+  props<{ quizzes: Quiz[] }>()
+);
+
+export const loadAvailableQuizzesFailure = createAction(
+  '[Quiz] Load Available Quizzes Failure',
+  props<{ error: string }>()
+);

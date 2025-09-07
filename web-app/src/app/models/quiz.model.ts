@@ -17,6 +17,20 @@ export interface Quiz {
   updated_at: string;
 }
 
+export interface QuestionResult {
+  question: string;
+  user_answer: string;
+  correct_answer: string;
+  is_correct: boolean;
+  options: {
+    A: string;
+    B: string;
+    C: string;
+    D: string;
+  };
+  explanation?: string;
+}
+
 export interface QuizResult {
   id: number;
   quiz_id: number;
@@ -24,6 +38,7 @@ export interface QuizResult {
   score: number;
   total_questions: number;
   percentage: number;
+  question_results?: QuestionResult[];
   created_at: string;
   updated_at: string;
 }
@@ -31,6 +46,7 @@ export interface QuizResult {
 export interface QuizState {
   currentQuiz: Quiz | null;
   quizResults: QuizResult[];
+  availableQuizzes: Quiz[];
   loading: boolean;
   error: string | null;
 }

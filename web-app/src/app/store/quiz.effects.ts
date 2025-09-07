@@ -61,4 +61,22 @@ export class QuizEffects {
       )
     )
   );
+
+  loadAvailableQuizzes$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(QuizActions.loadAvailableQuizzes),
+      switchMap(() =>
+        this.quizService.getAvailableQuizzes().pipe(
+          map((quizzes) =>
+            QuizActions.loadAvailableQuizzesSuccess({ quizzes })
+          ),
+          catchError((error) =>
+            of(
+              QuizActions.loadAvailableQuizzesFailure({ error: error.message })
+            )
+          )
+        )
+      )
+    )
+  );
 }

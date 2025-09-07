@@ -81,11 +81,24 @@ class QuizController extends Controller
 
         $score = 0;
         $totalQuestions = count($questions);
+        $questionResults = [];
 
         foreach ($questions as $index => $question) {
-            if (isset($userAnswers[$index]) && $userAnswers[$index] === $question['correct_answer']) {
+            $userAnswer = $userAnswers[$index] ?? null;
+            $isCorrect = $userAnswer === $question['correct_answer'];
+            
+            if ($isCorrect) {
                 $score++;
             }
+
+            $questionResults[] = [
+                'question' => $question['question'],
+                'user_answer' => $userAnswer,
+                'correct_answer' => $question['correct_answer'],
+                'is_correct' => $isCorrect,
+                'options' => $question['options'],
+                'explanation' => $isCorrect ? null : $this->generateExplanation($question, $userAnswer)
+            ];
         }
 
         $result = QuizResult::create([
@@ -100,8 +113,28 @@ class QuizController extends Controller
             'result' => $result,
             'score' => $score,
             'total_questions' => $totalQuestions,
-            'percentage' => round(($score / $totalQuestions) * 100, 2)
+            'percentage' => round(($score / $totalQuestions) * 100, 2),
+            'question_results' => $questionResults
         ]);
+    }
+
+    /**
+     * Generate explanation for wrong answer using AI
+     */
+    private function generateExplanation($question, $userAnswer)
+    {
+        try {
+            $prompt = "Question: {$question['question']}\n";
+            $prompt .= "Correct Answer: {$question['correct_answer']}\n";
+            $prompt .= "User's Answer: {$userAnswer}\n";
+            $prompt .= "Options: " . json_encode($question['options']) . "\n";
+            $prompt .= "Please provide a brief explanation (1-2 sentences) of why the correct answer is right and why the user's answer is wrong. Be encouraging and educational.";
+
+            $response = $this->openAIService->generateExplanation($prompt);
+            return $response;
+        } catch (\Exception $e) {
+            return "The correct answer is {$question['correct_answer']}. Please review the question and try to understand why this answer is correct.";
+        }
     }
 
     /**

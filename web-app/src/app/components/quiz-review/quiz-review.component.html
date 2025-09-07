@@ -1,0 +1,60 @@
+<div class="quiz-review" *ngIf="result">
+  <div class="review-header">
+    <h3>Quiz Review</h3>
+    <div class="score-summary">
+      <span class="score">{{ result.score }}/{{ result.total_questions }}</span>
+      <span class="percentage">{{ result.percentage }}%</span>
+    </div>
+  </div>
+
+  <div class="questions-review" *ngIf="result.question_results">
+    <div
+      class="question-item"
+      *ngFor="let questionResult of result.question_results; let i = index"
+    >
+      <div class="question-header">
+        <h4>Question {{ i + 1 }}</h4>
+        <div
+          class="question-status"
+          [class.correct]="questionResult.is_correct"
+          [class.incorrect]="!questionResult.is_correct"
+        >
+          {{ questionResult.is_correct ? "✓ Correct" : "✗ Incorrect" }}
+        </div>
+      </div>
+
+      <p class="question-text">{{ questionResult.question }}</p>
+
+      <div class="options-review">
+        <div
+          class="option"
+          *ngFor="let option of ['A', 'B', 'C', 'D']"
+          [class]="getOptionClass(questionResult, option)"
+        >
+          <span class="option-label">{{ option }}.</span>
+          <span class="option-text">{{
+            getOptionText(questionResult, option)
+          }}</span>
+          <span
+            class="option-indicator"
+            *ngIf="option === questionResult.correct_answer"
+            >✓</span
+          >
+          <span
+            class="option-indicator incorrect"
+            *ngIf="
+              option === questionResult.user_answer &&
+              !questionResult.is_correct
+            "
+            >✗</span
+          >
+        </div>
+      </div>
+
+      <div class="explanation" *ngIf="questionResult.explanation">
+        <h5>Explanation:</h5>
+        <p>{{ questionResult.explanation }}</p>
+      </div>
+    </div>
+  </div>
+</div>

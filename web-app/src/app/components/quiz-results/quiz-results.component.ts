@@ -8,10 +8,11 @@ import {
 } from '../../store/quiz.selectors';
 import { clearQuiz } from '../../store/quiz.actions';
 import { Quiz, QuizResult } from '../../models/quiz.model';
+import { QuizReviewComponent } from '../quiz-review/quiz-review.component';
 
 @Component({
   selector: 'app-quiz-results',
-  imports: [CommonModule],
+  imports: [CommonModule, QuizReviewComponent],
   templateUrl: './quiz-results.component.html',
   styleUrl: './quiz-results.component.css',
 })

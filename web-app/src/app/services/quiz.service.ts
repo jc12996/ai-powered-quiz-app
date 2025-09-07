@@ -45,12 +45,20 @@ export class QuizService {
         score: number;
         total_questions: number;
         percentage: number;
+        question_results: any[];
       }>(`${this.apiUrl}/quizzes/${quizId}/submit`, { answers })
       .pipe(
         map((response) => ({
           ...response.result,
           percentage: response.percentage,
+          question_results: response.question_results,
         }))
       );
+  }
+
+  getAvailableQuizzes(): Observable<Quiz[]> {
+    return this.http
+      .get<{ quizzes: Quiz[] }>(`${this.apiUrl}/quizzes`)
+      .pipe(map((response) => response.quizzes));
   }
 }
