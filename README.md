@@ -50,7 +50,7 @@ A full-stack web application that generates intelligent multiple-choice quizzes 
 
    ```bash
    git clone <repository-url>
-   cd quiz-app
+   cd ai-powered-quiz-app
    ```
 
 2. **Configure Environment Variables**
@@ -122,7 +122,7 @@ make build-backend
 ### Project Structure
 
 ```
-quiz-app/
+ai-powered-quiz-app/
 ├── web-app/                 # Angular 19 frontend
 │   ├── src/app/
 │   │   ├── components/      # Quiz components
